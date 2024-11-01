@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Profile Page
+{% endblock %}
+
+{% block content %}
+<h1>{{ user.username }}'s Profile</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Update Profile</button>
+</form>
+<p>
+    <a href="{% url 'home' %}">Go Back to Home Page</a>
+</p>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home Page
+{% endblock %}
+
+{% block content %}
+Welcome <b>{{ request.user }}</b>
+
+<p>
+    <a href="{% url 'event_form' %}">Create Event</a>
+</p>
+<h2>Events</h2>
+<div>
+    {% for event in events %}
+        <div>
+            <div>
+                <h3>{{ event.title }}</h3>
+                <p>Date: {{ event.date }}</p>
+                <p>Location: {{ event.location }}</p>
+                <p>Description: {{ event.description }}</p>
+            </div>
+            <div>
+                {% if request.user.is_authenticated %}
+                    {% if event in request.user.booking_set.all %}
+                        <span>Booked</span>
+                    {% else %}
+                        <form action="{% url 'event_book' event.pk %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Book Event</button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'login' %}">Login to Book</a>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <div role="alert">
+            No events available at the moment.
+        </div>
+    {% endfor %}
+</div>
+
+<form method="GET" action="{% url 'event_list' %}">
+    <input type="text" name="q" placeholder="Search for events..." required>
+    <button type="submit">Search</button>
+</form>
+
+{% endblock %}
